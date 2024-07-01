@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 app.get("/fetch-books?page=:page", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const link = "https://openlibrary.org/trending/daily";
-    let i = parseInt((_a = req.params.page) !== null && _a !== void 0 ? _a : "0");
+    let i = parseInt((_a = req.params.page) !== null && _a !== void 0 ? _a : "1");
     const books = [];
     const response = yield fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
         redirect: "follow",
