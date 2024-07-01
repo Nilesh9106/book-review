@@ -27,6 +27,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 // Define schema for Users collection
 const reviewSchema = new mongoose_1.Schema({
     book_id: { type: String, required: true },
+    user_id: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     rating: { type: Number, required: true },
     comment: { type: String, required: false },
 });

@@ -25,8 +25,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", AuthRouter);
-app.use("api/review", authMiddleware, reviewRouter);
-app.use("api/books", authMiddleware, bookRouter);
+app.use("/api/reviews", authMiddleware, reviewRouter);
+app.use("/api/books", bookRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

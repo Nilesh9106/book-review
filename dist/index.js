@@ -27,8 +27,8 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use("/api/auth", auth_1.default);
-app.use("api/review", authMiddleware_1.authMiddleware, review_1.default);
-app.use("api/books", authMiddleware_1.authMiddleware, book_1.default);
+app.use("/api/reviews", authMiddleware_1.authMiddleware, review_1.default);
+app.use("/api/books", book_1.default);
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });

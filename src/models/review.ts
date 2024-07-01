@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 // Define interface for User document
 interface ReviewDoc extends Document {
   book_id: string;
+  user_id: Schema.Types.ObjectId;
   rating: number;
   comment: string;
 }
@@ -11,6 +12,7 @@ interface ReviewDoc extends Document {
 // Define schema for Users collection
 const reviewSchema = new Schema<ReviewDoc>({
   book_id: { type: String, required: true },
+  user_id: { type: Schema.Types.ObjectId, ref: "User", required: true },
   rating: { type: Number, required: true },
   comment: { type: String, required: false },
 });
