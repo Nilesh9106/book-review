@@ -32,9 +32,9 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/fetch-books?page=:page", async (req, res) => {
+app.get("/fetch-books", async (req, res) => {
   const link = "https://openlibrary.org/trending/daily";
-  let i = parseInt(req.params.page ?? "1");
+  let i = parseInt((req.query.page as string) ?? "1");
   const books: BookType[] = [];
   const response = await fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
     redirect: "follow",
