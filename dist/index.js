@@ -32,52 +32,50 @@ app.use("/api/books", book_1.default);
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-app.get("/fetch-books", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+app.get("/fetch-books?page=:page", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const link = "https://openlibrary.org/trending/daily";
-    let i = 0;
-    while (i < 10) {
-        const books = [];
-        const response = yield fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
-            redirect: "follow",
+    let i = parseInt((_a = req.params.page) !== null && _a !== void 0 ? _a : "0");
+    const books = [];
+    const response = yield fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
+        redirect: "follow",
+    });
+    const html = yield response.text();
+    const $ = (0, cheerio_1.load)(html);
+    $("ul.list-books .searchResultItem").each((index, element) => {
+        var _a, _b;
+        const book = $(element);
+        const title = book.find(".booktitle").text().trim();
+        const id = (_b = (_a = book
+            .find(".bookcover a")
+            .attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) === null || _b === void 0 ? void 0 : _b.split("?")[0];
+        const author = [];
+        book.find(".bookauthor a").each((index, element) => {
+            author.push($(element).text());
         });
-        const html = yield response.text();
-        const $ = (0, cheerio_1.load)(html);
-        $("ul.list-books .searchResultItem").each((index, element) => {
-            var _a, _b;
-            const book = $(element);
-            const title = book.find(".booktitle").text().trim();
-            const id = (_b = (_a = book
-                .find(".bookcover a")
-                .attr("href")) === null || _a === void 0 ? void 0 : _a.split("/").pop()) === null || _b === void 0 ? void 0 : _b.split("?")[0];
-            const author = [];
-            book.find(".bookauthor a").each((index, element) => {
-                author.push($(element).text());
-            });
-            const cover = book.find(".bookcover img").attr("src");
-            books.push({
-                book_id: id !== null && id !== void 0 ? id : "",
-                author: author,
-                cover: cover !== null && cover !== void 0 ? cover : "",
-                title: title,
-            });
+        const cover = book.find(".bookcover img").attr("src");
+        books.push({
+            book_id: id !== null && id !== void 0 ? id : "",
+            author: author,
+            cover: cover !== null && cover !== void 0 ? cover : "",
+            title: title,
         });
-        for (let i = 0; i < books.length; i++) {
-            const element = books[i];
-            const book = yield book_2.default.findOne({ book_id: element.book_id });
-            if (!book) {
-                console.log("Creating book", element.book_id);
-                yield book_2.default.create({
-                    book_id: element.book_id,
-                    title: element.title,
-                    author: element.author,
-                    cover: element.cover,
-                });
-            }
-            else {
-                console.log("Updating book", element.book_id);
-            }
+    });
+    for (let i = 0; i < books.length; i++) {
+        const element = books[i];
+        const book = yield book_2.default.findOne({ book_id: element.book_id });
+        if (!book) {
+            console.log("Creating book", element.book_id);
+            yield book_2.default.create({
+                book_id: element.book_id,
+                title: element.title,
+                author: element.author,
+                cover: element.cover,
+            });
         }
-        i++;
+        else {
+            console.log("Updating book", element.book_id);
+        }
     }
     res.json({ message: "Books Fetched  Successfully" });
 }));

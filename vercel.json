@@ -15,7 +15,43 @@
   ],
   "crons": [
     {
-      "path": "/fetch-books",
+      "path": "/fetch-books?page=1",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=2",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=3",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=4",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=5",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=6",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=7",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=8",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=9",
+      "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/fetch-books?page=10",
       "schedule": "0 0 * * *"
     }
   ]

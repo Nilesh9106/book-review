@@ -32,53 +32,50 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/fetch-books", async (req, res) => {
+app.get("/fetch-books?page=:page", async (req, res) => {
   const link = "https://openlibrary.org/trending/daily";
-  let i = 0;
-  while (i < 10) {
-    const books: BookType[] = [];
-    const response = await fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
-      redirect: "follow",
+  let i = parseInt(req.params.page ?? "0");
+  const books: BookType[] = [];
+  const response = await fetch(`${link}${i != 0 ? `?page=${i}` : ""}`, {
+    redirect: "follow",
+  });
+  const html = await response.text();
+  const $ = load(html);
+  $("ul.list-books .searchResultItem").each((index, element) => {
+    const book = $(element);
+    const title = book.find(".booktitle").text().trim();
+    const id = book
+      .find(".bookcover a")
+      .attr("href")
+      ?.split("/")
+      .pop()
+      ?.split("?")[0];
+    const author: string[] = [];
+    book.find(".bookauthor a").each((index, element) => {
+      author.push($(element).text());
     });
-    const html = await response.text();
-    const $ = load(html);
-    $("ul.list-books .searchResultItem").each((index, element) => {
-      const book = $(element);
-      const title = book.find(".booktitle").text().trim();
-      const id = book
-        .find(".bookcover a")
-        .attr("href")
-        ?.split("/")
-        .pop()
-        ?.split("?")[0];
-      const author: string[] = [];
-      book.find(".bookauthor a").each((index, element) => {
-        author.push($(element).text());
-      });
-      const cover = book.find(".bookcover img").attr("src");
-      books.push({
-        book_id: id ?? "",
-        author: author,
-        cover: cover ?? "",
-        title: title,
-      });
+    const cover = book.find(".bookcover img").attr("src");
+    books.push({
+      book_id: id ?? "",
+      author: author,
+      cover: cover ?? "",
+      title: title,
     });
-    for (let i = 0; i < books.length; i++) {
-      const element = books[i];
-      const book = await Book.findOne({ book_id: element.book_id });
-      if (!book) {
-        console.log("Creating book", element.book_id);
-        await Book.create({
-          book_id: element.book_id,
-          title: element.title,
-          author: element.author,
-          cover: element.cover,
-        });
-      } else {
-        console.log("Updating book", element.book_id);
-      }
+  });
+  for (let i = 0; i < books.length; i++) {
+    const element = books[i];
+    const book = await Book.findOne({ book_id: element.book_id });
+    if (!book) {
+      console.log("Creating book", element.book_id);
+      await Book.create({
+        book_id: element.book_id,
+        title: element.title,
+        author: element.author,
+        cover: element.cover,
+      });
+    } else {
+      console.log("Updating book", element.book_id);
     }
-    i++;
   }
   res.json({ message: "Books Fetched  Successfully" });
 });
