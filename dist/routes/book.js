@@ -18,10 +18,24 @@ const bookRouter = express_1.default.Router();
 bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const page = parseInt(req.query.page || "0");
     const size = parseInt(req.query.size || "10");
+    let sortBy = req.query.sortBy;
+    if (!["id", "title"].includes(sortBy)) {
+        sortBy = "id";
+    }
     const reviews = yield book_1.default.find()
         .skip(page * size)
-        .limit(size);
+        .limit(size)
+        .sort({ [sortBy]: -1 });
     return res.status(200).json({ reviews });
+}));
+bookRouter.get("/search", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const query = req.query.query;
+    const page = parseInt(req.query.page || "0");
+    const size = parseInt(req.query.size || "10");
+    const books = yield book_1.default.find({ title: { $regex: query, $options: "i" } })
+        .skip(page * size)
+        .limit(size);
+    return res.status(200).json({ books });
 }));
 exports.default = bookRouter;
 //# sourceMappingURL=book.js.map
