@@ -28,6 +28,10 @@ app.use("/api/auth", AuthRouter);
 app.use("api/review", authMiddleware, reviewRouter);
 app.use("api/books", authMiddleware, bookRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.get("/fetch-books", async (req, res) => {
   const link = "https://openlibrary.org/trending/daily";
   let i = 0;
