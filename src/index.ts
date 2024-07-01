@@ -76,7 +76,6 @@ app.get("/fetch-books", async (req, res) => {
         });
       } else {
         console.log("Updating book", element.book_id);
-        await Book.updateOne({ book_id: element.book_id }, { ...element });
       }
     }
     i++;

@@ -75,7 +75,6 @@ app.get("/fetch-books", (req, res) => __awaiter(void 0, void 0, void 0, function
             }
             else {
                 console.log("Updating book", element.book_id);
-                yield book_2.default.updateOne({ book_id: element.book_id }, Object.assign({}, element));
             }
         }
         i++;
